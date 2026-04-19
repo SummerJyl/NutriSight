@@ -1,0 +1,9 @@
+[
+  { "timestamp": "2025-06-01T08:00:00Z", "glucose": 95 },
+  { "timestamp": "2025-06-01T10:00:00Z", "glucose": 110 },
+  { "timestamp": "2025-06-01T12:00:00Z", "glucose": 130 },
+  { "timestamp": "2025-06-01T14:00:00Z", "glucose": 115 },
+  { "timestamp": "2025-06-01T16:00:00Z", "glucose": 100 },
+  { "timestamp": "2025-06-01T18:00:00Z", "glucose": 90 },
+  { "timestamp": "2025-06-01T20:00:00Z", "glucose": 105 }
+]
