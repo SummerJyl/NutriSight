@@ -1,0 +1,39 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: nutrisight-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: nutrisight
+      POSTGRES_USER: nutrisight
+      POSTGRES_PASSWORD: nutrisight_dev_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - nutrisight_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nutrisight -d nutrisight"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  nutrisight-ml:
+    build: ./nutrisight-ml
+    container_name: nutrisight-ml
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    environment:
+      NUTRISIGHT_DB_DSN: "dbname=nutrisight user=nutrisight password=nutrisight_dev_password host=postgres port=5432"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  nutrisight_pg_data:

@@ -1,0 +1,4 @@
+backend/.gradle/
+backend/bin/
+backend/build/
+nutrisight-rag-update/

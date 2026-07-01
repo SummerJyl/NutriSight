@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.dataexplorer.nutritionapi.repository.FoodVectorRepository.FoodSemanticMatch;
+import com.dataexplorer.nutritionapi.service.SemanticSearchService;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,17 +18,32 @@ public class FoodController {
     
     @Autowired
     private FoodService foodService;
+    @Autowired
+    private SemanticSearchService semanticSearchService;
     
-    // GET /api/foods/search?query=apple&limit=10
-    @GetMapping("/search")
-    public ResponseEntity<Page<Food>> searchFoods(
-            @RequestParam String query,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int limit) {
-        
-        Page<Food> foods = foodService.searchFoods(query, page, limit);
-        return ResponseEntity.ok(foods);
-    }
+
+    // GET /api/foods/semantic-search?query=post-workout+snacks&limit=10
+        // For abstract / intent-based queries that exact-substring search
+        // (the endpoint below) can't match against food names.
+        @GetMapping("/semantic-search")
+        public ResponseEntity<List<FoodSemanticMatch>> semanticSearch(
+                @RequestParam String query,
+                @RequestParam(defaultValue = "10") int limit) {
+
+            List<FoodSemanticMatch> matches = semanticSearchService.search(query, limit);
+            return ResponseEntity.ok(matches);
+        }
+
+        // GET /api/foods/search?query=apple&limit=10
+        @GetMapping("/search")
+        public ResponseEntity<Page<Food>> searchFoods(
+                @RequestParam String query,
+                @RequestParam(defaultValue = "0") int page,
+                @RequestParam(defaultValue = "10") int limit) {
+                
+                Page<Food> foods = foodService.searchFoods(query, page, limit);
+                return ResponseEntity.ok(foods);
+            }
     
     // GET /api/foods/{id}
     @GetMapping("/{id}")
