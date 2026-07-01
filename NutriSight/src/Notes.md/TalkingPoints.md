@@ -225,3 +225,24 @@ This log demonstrates:
 - **Production Awareness:** Knowing difference between MVP and production-ready
 
 **For Interviews:** Shows you think like an engineer who makes intentional decisions, not just someone who follows tutorials.
+
+---
+## Decision 7: Leveraging Embedding Technology & Vector Search
+
+### Context
+Traditional exact keyword matching (`LIKE %query%`) against the USDA food database failed on abstract user intents. If a user searched for "diabetic-friendly breakfast" or "something high-protein after a workout," the system returned zero results.
+
+### Options Considered
+* **Option A: Massive manual mapping/tagging.** (Cons: Impossible to scale, incredibly brittle).
+* **Option B: Standalone Vector Database** like Pinecone or Milvus. (Pros: Highly scalable. Cons: Overkill for MVP, adds infrastructure cost, requires managing a separate database cluster).
+* **Option C: PostgreSql with `pgvector` extension.** (Pros: Free, keeps infrastructure lightweight, allows unified relational and vector queries in a single transaction).
+
+### Decision Made
+Option C. Implement the `pgvector` extension inside our existing PostgreSQL database and handle embedding generation inside the `nutrisight-ml` Python/FastAPI microservice.
+
+### Reasoning
+* **Architectural Pragmatism:** Rather than introducing operational complexity by prematurely spinning up a standalone vector database cluster, `pgvector` allows us to maintain strict ACID compliance and keep infrastructure overhead low while delivering identical semantic search accuracy.
+* **Separation of Concerns:** The Spring Boot backend remains the high-throughput transactional core, while the FastAPI service is cleanly isolated to handle heavy ML matrix operations (generating 384-dimensional dense vectors using the `all-MiniLM-L6-v2` transformer model).
+
+### Interview Talking Point
+"To handle semantic search for abstract user queries like 'post-workout snacks,' I added embedding technology to NutriSight. I leveraged a Python FastAPI microservice to generate dense vectors using a lightweight transformer model, storing them directly in our existing PostgreSQL instance using the `pgvector` extension. This architectural choice allowed us to achieve semantic matching capabilities without the overhead or cost of managing a standalone vector database cluster."

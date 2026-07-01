@@ -156,6 +156,23 @@ A nutrition tracking application that allows users to explore USDA food database
 - [ ] Component documentation
 - [ ] User guide
 
+## Phase 7: Semantic Search & AI Integration (Embedding Tech)
+
+## Week 17: Database Extension & Setup
+- [ ] Install and enable `pgvector` extension in PostgreSQL
+- [ ] Create database migration script to add `description_embedding vector(384)` to the `food_items` table
+- [ ] Verify local database container or instance supports the vector extension
+
+## Week 18: FastAPI Embedding Service (`nutrisight-ml`)
+- [ ] Install `sentence-transformers` and `pydantic` in `requirements.txt`
+- [ ] Build `/generate-embedding` POST endpoint in `main.py` using a lightweight model (e.g., `all-MiniLM-L6-v2`)
+- [ ] Create a Python script to batch-process existing USDA food descriptions into vectors and save them back to Postgres
+
+## Week 19: Full-Stack Integration & Semantic Queries
+- [ ] Update Spring Boot backend to handle vector data types
+- [ ] Implement a custom repository method using Native SQL for cosine similarity searches (`<=>` operator)
+- [ ] Connect the React frontend search bar to trigger semantic lookups when users search for abstract intent (e.g., "low glycemic index snacks")
+
 ## Daily Practice Strategy
 
 - **Time commitment:** 30-60 minutes per day
